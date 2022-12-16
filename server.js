@@ -1,16 +1,17 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const db = require("./app/models/index.js");
+// const db = require("./app/models/index.js");
+require('dotenv').config();
 
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
-const controllers = require('./app/controllers/sample.controller');
+const mchimp_controllers = require('./app/controllers/mchimp.controller');
 
 const app = express();
 var corsOptions = {
-  origin: '*'
+  origin: process.env['front_url']
 };
 app.use(cors(corsOptions));
 
@@ -26,44 +27,24 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/get-all-things", (req, res) => {
-  controllers.findAllThings(req, res);
-});
- 
-app.get("/get-thing/:id", (req, res) => {
-  controllers.findOneThing(req, res);
-});
-
-app.post('/add-thing', (req, res) => {
-  controllers.addOneThing(req, res);
-});
-
-app.post("/update-thing/:id", (req, res) => {
-  controllers.updateOneThing(req, res);
-});
-
-app.post("/delete-thing/:id", (req, res) => {
-  controllers.deleteOneThing(req, res);
-});
-
-app.post("/delete-all-things", (req, res) => {
-  controllers.deleteAllThings(req, res);
+app.post("/add-email", (req, res) => {
+  mchimp_controllers.addEmail(req, res);
 });
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Port: ${PORT} ✅`);
+const port = process.env['port'] || 8080;
+app.listen(port, () => {
+  console.log(`Port: ${ port } ✅`);
 });
 
-db.mongoose.connect(db.url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => {
-  console.log("MongoDB ✅");
-})
-.catch(err => {
-  console.log("MongoDB ❌", err);
-  process.exit();
-});
+// db.mongoose.connect(db.url, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true
+// })
+// .then(() => {
+//   console.log("MongoDB ✅");
+// })
+// .catch(err => {
+//   console.log("MongoDB ❌", err);
+//   process.exit();
+// });
